@@ -25,11 +25,14 @@ class Login extends Component {
   onSubmitForm = async event => {
     event.preventDefault()
     const {username, password} = this.state
-    const url = '/login'
+    const url = "/login"
     const userData = {username, password}
     const options = {
       method: 'POST',
       body: JSON.stringify(userData),
+      headers: {
+        "mode": "no-cors"
+      }
     }
     const response = await fetch(url, options)
     const data = await response.json()

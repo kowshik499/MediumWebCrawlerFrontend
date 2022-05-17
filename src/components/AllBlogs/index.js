@@ -329,26 +329,67 @@ class AllBlogs extends Component {
     searchInput: '',
   }
 
-  getBlogsDetails = () =>{
-    console.log("Entered into getBlogDetails")
 
+  getBlogsDetails = async () =>{
     this.setState({blogsListStatus: statusConstants.loading})
+    const url = "/blogs"
     const {searchInput} = this.state
-    let val = searchInput.toLowerCase()
-    console.log(val)
-    if (val==="business" || val==="cooking" || val==="culture"){
-      this.setState({blogsListStatus:statusConstants.success})
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({tag: searchInput})
     }
-    else{
-      this.setState({blogsListStatus: statusConstants.failure})
+    const response = await fetch(url, options)
+    const data = await response.json()
+    if (response.ok === true){
+      const updatedData = data.map(blog => ({
+          id: blog.id,
+          blogName: blog.blog_name,
+          blogLink: blog.blog_link,
+          authorName: blog.author_name,
+          authorLink: blog.author_blog_link,
+          publishedTime: blog.published_time,
+          readTime: blog.read_time,
+          relatedTag: blog.related_tag,
+          blogDescription: blog.blog_description
+      }))
+
+      this.setState({
+        blogsList: updatedData,
+        blogsListStatus: statusConstants.success,
+      })
+    } else{
+      this.setState({blogsList: [], blogsListStatus: statusConstants.failure})
     }
   }
+
+  // getBlogsDetails = () =>{
+  //   console.log("Entered into getBlogDetails")
+
+  //   this.setState({blogsListStatus: statusConstants.loading})
+  //   const {searchInput} = this.state
+  //   let val = searchInput.toLowerCase()
+  //   console.log(val)
+  //   if (val==="business" || val==="cooking" || val==="culture"){
+  //     this.setState({blogsListStatus:statusConstants.success})
+  //   }
+  //   else{
+  //     this.setState({blogsListStatus: statusConstants.failure})
+  //   }
+  // }
 
   onChangeSearchInput = event => {
     this.setState({searchInput: event.target.value})
   }
 
   onClickSearchBtn = () => {
+    this.getBlogsDetails()
+  }
+
+  onClickRelatedTag = (tag) =>{
+    this.setState({searchInput: tag})
     this.getBlogsDetails()
   }
 
@@ -383,34 +424,59 @@ class AllBlogs extends Component {
     </div>
   )
 
-  renderBlogs(blogsData){
-    console.log("Entered into render blogs")
-    console.log(blogsData)
+  renderBlogsListSuccessView = () => {
+    const {blogsList} = this.state
+    if (blogsList.lenght === 0){
+      return (
+        <div className="blogs-list-failure-cont">
+          <img
+            src="https://assets.ccbp.in/frontend/react-js/no-jobs-img.png"
+            alt="no blogs"
+          />
+          <h1 className="blogs-failure-head">No Jobs Found</h1>
+          <p className="blogs-failure-para">
+            We could not find any jobs. Try other filters
+          </p>
+        </div>
+      )
+    }
     return (
       <ul className="blog-list-cont">
-        {blogsData.map(eachBlog => (
-          <BlogCard key={eachBlog.id} blogDetails={eachBlog} />
+        {blogsList.map(eachBlog => (
+          <BlogCard key={eachBlog} blogDetails={eachBlog} onClickRelatedTag = {this.onClickRelatedTag} />
         ))}
       </ul>
     )
   }
 
-  renderBlogsListSuccessView = () =>{
-    console.log("Entered into success view")
-    const {searchInput} = this.state
-    const val = searchInput.toLowerCase()
+  // renderBlogs(blogsData){
+  //   console.log("Entered into render blogs")
+  //   console.log(blogsData)
+  //   return (
+  //     <ul className="blog-list-cont">
+  //       {blogsData.map(eachBlog => (
+  //         <BlogCard key={eachBlog.id} blogDetails={eachBlog} />
+  //       ))}
+  //     </ul>
+  //   )
+  // }
 
-    if (val==="business"){
-      console.log("entered into business if")
-      return this.renderBlogs(business)
-    }
-    else if (val==="culture"){
-      return this.renderBlogs(culture)
-    }
-    else if (val==="cooking"){
-      return this.renderBlogs(cooking)
-    }
-  }
+  // renderBlogsListSuccessView = () =>{
+  //   console.log("Entered into success view")
+  //   const {searchInput} = this.state
+  //   const val = searchInput.toLowerCase()
+
+  //   if (val==="business"){
+  //     console.log("entered into business if")
+  //     return this.renderBlogs(business)
+  //   }
+  //   else if (val==="culture"){
+  //     return this.renderBlogs(culture)
+  //   }
+  //   else if (val==="cooking"){
+  //     return this.renderBlogs(cooking)
+  //   }
+  // }
 
   renderBlogsListView = () => {
     const {blogsListStatus} = this.state

@@ -5,7 +5,7 @@ import {BsFillStarFill, BsFillTagFill, BsFillClockFill} from 'react-icons/bs'
 import './index.css'
 
 const BlogCard = props => {
-  const {blogDetails} = props
+  const {blogDetails, onClickRelatedTag} = props
   console.log("Entered into blogCard")
   const{
     id,
@@ -18,6 +18,10 @@ const BlogCard = props => {
     relatedTag,
     blogDescription
   } = blogDetails
+
+  const onClickTag = () =>{
+    onClickRelatedTag(relatedTag)
+  }
 
   return (
     <li className="blog-cont">
@@ -41,7 +45,7 @@ const BlogCard = props => {
         <div className="blog-cont-1">
           <div className="blog-cont-3">
             <BsFillTagFill className="blog-icon location" />
-            <p className="location-text">{relatedTag}</p>
+            <button className="location-text" onClick={onClickTag}>{relatedTag}</button>
           </div>
           <div className="blog-cont-3">
             <BsFillClockFill className="blog-icon location" />
@@ -53,7 +57,7 @@ const BlogCard = props => {
         </div>
       </div>
       <hr className="line" />
-      <Link to="/blog/id" className='blog-link'>
+      <Link to={`/blog/${blogLink}`} className='blog-link'>
         <h1 className="description-head">{blogName}</h1>
         <p className="description-para">{blogDescription}</p>
       </Link>

@@ -67,6 +67,10 @@
   font-family: 'Roboto';
   font-weight: 300;
   margin-right: 10px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  outline: none;
 }
 
 .description-head {

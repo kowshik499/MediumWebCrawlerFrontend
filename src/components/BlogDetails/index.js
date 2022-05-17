@@ -139,6 +139,45 @@ class BlogDetails extends Component {
     apiStatus: statusConstants.success,
   }
 
+  componentDidMount(){
+    this.getBlogDetails()
+  }
+
+  getBlogDetails = async () =>{
+    this.setState({apiStatus: statusConstants.inProgress})
+    const {match} = this.props
+    const {params} = match
+    const {url} = params
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({url})
+    }
+    const response = await fetch("/blog/id", options)
+    const data = await response.json()
+    if(response.ok){
+      const updatedData = {
+        id: data.id,
+        blogLink: data.blog_link,
+        blogTitle: data.blog_title,
+        blogSubTitle: data.blog_sub_title,
+        authorName: data.author_name,
+        authorBlogLink: data.author_blog_link,
+        publishedDate: data.published_date,
+        readTime: data.read_time,
+        clapCount: data.clap_count,
+        commentCount: data.comment_count,
+        blogContent: data.blog_content
+      }
+      this.setState({blogData: updatedData, apiStatus: statusConstants.success})
+    }
+    else{
+      this.setState({blogData: {}, apiStatus: statusConstants.failure})
+    }
+  }
+
   renderFailureView = () => (
     <div className="blog-details-failure-cont">
       <img
@@ -161,11 +200,8 @@ class BlogDetails extends Component {
     </div>
   )
 
-  contentBreaker = (blogContent) =>{
-
-  }
-
   renderSuccessView = () => {
+    const {blogData} = this.state
     const {
       blogTitle,
       blogSubTitle,
@@ -176,7 +212,8 @@ class BlogDetails extends Component {
       commentCount,
       clapCount,
       blogContent
-    } = blogDetails
+    } = blogData       //blog Details
+
     return (
       <>
         <div className="blog-details-cont">
@@ -217,18 +254,6 @@ class BlogDetails extends Component {
             </div>
           </div>
           <p className="description-para">{blogContent}</p>
-          
-          {/* <div className="life-at-company-cont">
-            <div className="life-at-company-data">
-              <h1 className="description-head">Life at Company</h1>
-              <p className="description-para">{lifeAtCompany.description}</p>
-            </div>
-            <img
-              src={lifeAtCompany.imageUrl}
-              alt="life at company"
-              className="life-at-company-img"
-            />
-          </div> */}
         </div>
         <div className="similar-jobs-head-cont">
           <h1 className="similar-jobs-head">Similar Blogs</h1>
