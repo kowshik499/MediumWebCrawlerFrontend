@@ -25,7 +25,7 @@ class Login extends Component {
   onSubmitForm = async event => {
     event.preventDefault()
     const {username, password} = this.state
-    const url = 'https://apis.ccbp.in/login'
+    const url = '/login'
     const userData = {username, password}
     const options = {
       method: 'POST',
@@ -95,20 +95,15 @@ class Login extends Component {
 
   render() {
     const {showErrMsg, errorMsg} = this.state
-    // const jwtToken = Cookies.get('jwt_token')
-    // if (jwtToken !== undefined) {
-    //   return <Redirect to="/" />
-    // }
+    const jwtToken = Cookies.get('jwt_token')
+    if (jwtToken !== undefined) {
+      return <Redirect to="/" />
+    }
     return (
       <div className="login-main-cont">
         <form className="login-form" onSubmit={this.onSubmitForm}>
           <div className='login-logo-cont'>
           <h1 className='login-logo-head'>Crawler</h1>
-          {/* <img
-            src="https://res.cloudinary.com/avk/image/upload/v1652537933/crawler_img_wjfo6r.png"
-            alt="website logo"
-            className="login-img"
-          /> */}
           </div>
           <div className="inputs-cont">
             {this.renderUsernameInput()}
