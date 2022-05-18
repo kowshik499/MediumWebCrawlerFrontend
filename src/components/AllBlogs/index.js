@@ -327,13 +327,19 @@ class AllBlogs extends Component {
     blogsListStatus: statusConstants.success,
     blogsList: [],
     searchInput: '',
+    searchHistory: [],
   }
 
 
   getBlogsDetails = async () =>{
-    this.setState({blogsListStatus: statusConstants.loading})
-    const url = "/blogs"
     const {searchInput} = this.state
+
+    this.setState(prevState => ({
+      blogsListStatus: statusConstants.loading,
+      searchHistory: [...prevState.searchHistory, searchInput]
+    }))
+    
+    const url = "/blogs"
     const options = {
       method: "POST",
       headers: {

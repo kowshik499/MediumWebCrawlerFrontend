@@ -31,7 +31,7 @@ class Login extends Component {
       method: 'POST',
       body: JSON.stringify(userData),
       headers: {
-        "mode": "no-cors"
+        "mode": "cors"
       }
     }
     const response = await fetch(url, options)
